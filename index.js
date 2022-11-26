@@ -52,6 +52,14 @@ async function run(){
 
 
         // add a products
+
+        app.get('/addAProduct', async(req, res)=>{
+            const email = req.query.email;
+            console.log(email)
+            const query = {ownerEmail : email};
+            const product = await allProductsCollection.find(query).toArray();
+            res.send(product);
+        })
         app.post('/addAProduct', async(req, res)=>{
             const product = req.body;
             const result = await allProductsCollection.insertOne(product);
