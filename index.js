@@ -37,11 +37,6 @@ async function run(){
             res.send(result);
         })
 
-        // app.get('/allproducts', async(req, res)=>{
-        //     const query = {};
-        //     const result = await allProductsCollection.find(query).toArray();
-        //     res.send(result);
-        // })
         app.get('/allproducts/:id', async(req, res)=>{
             const id = req.params.id;
             const filter = {categoryId: id}
@@ -52,10 +47,8 @@ async function run(){
 
 
         // add a products
-
         app.get('/addAProduct', async(req, res)=>{
             const email = req.query.email;
-            console.log(email)
             const query = {ownerEmail : email};
             const product = await allProductsCollection.find(query).toArray();
             res.send(product);
@@ -63,6 +56,13 @@ async function run(){
         app.post('/addAProduct', async(req, res)=>{
             const product = req.body;
             const result = await allProductsCollection.insertOne(product);
+            res.send(result);
+        });
+        app.delete('/addAProduct/:id', async(req, res)=>{
+            const id = req.params.id;
+            console.log(id)
+            const filter = {_id: ObjectId(id)};
+            const result = await allProductsCollection.deleteOne(filter);
             res.send(result);
         })
 
@@ -79,6 +79,12 @@ async function run(){
             const result = await bookingsCollection.insertOne(booking);
             res.send(result);
         });
+        app.delete('/bookings/:id', async(req, res)=>{
+            const id = req.params.id;
+            const filter = {_id: ObjectId(id)};
+            const result = await bookingsCollection.deleteOne(filter);
+            res.send(result);
+        })
 
         // users collections
         app.post('/users', async(req, res)=>{
