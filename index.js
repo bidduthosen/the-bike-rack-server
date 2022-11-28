@@ -104,6 +104,7 @@ async function run(){
             const result = await bookingsCollection.insertOne(booking);
             res.send(result);
         });
+        
         app.delete('/bookings/:id', async(req, res)=>{
             const id = req.params.id;
             const filter = {_id: ObjectId(id)};
@@ -132,6 +133,20 @@ async function run(){
             res.send(users);
         });
 
+        app.post('/users', async(req, res)=>{
+            const user = req.body;
+            const result = await usersCollection.insertOne(user);
+            res.send(result);
+        });
+
+        app.delete('/users/:id', async(req, res)=>{
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const result = await usersCollection.deleteOne(query);
+            res.send(result);
+        })
+
+        // admin role
         app.get('/users/admin/:email', async(req, res)=>{
             const email = req.params.email;
             const query = {email};
@@ -139,11 +154,7 @@ async function run(){
             res.send({isAdmin: user?.role === 'admin'});
         });
 
-        app.post('/users', async(req, res)=>{
-            const user = req.body;
-            const result = await usersCollection.insertOne(user);
-            res.send(result);
-        })
+        
         app.put('/users/admin/:id', verifyJWT, async(req, res)=>{
             const decodedEmail = req.decoded.email;
             const query = {email: decodedEmail}
@@ -163,8 +174,15 @@ async function run(){
             }
             const result = await usersCollection.updateOne(filter, updateDoc, options);
             res.send(result);
-        })
+        });
 
+        // seller  role
+        app.get('/users/seller/:email', async(req, res)=>{
+            const email = req.params.email;
+            const query = {email};
+            const user = await usersCollection.findOne(query);
+            res.send({isSeller: user?.isUser === 'Seller'});
+        });
 
     }
     finally{
