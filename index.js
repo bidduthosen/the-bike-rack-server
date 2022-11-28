@@ -45,6 +45,9 @@ async function run(){
     const allProductsCollection = client.db('bikeRackResale').collection('allProducts');
     const bookingsCollection = client.db('bikeRackResale').collection('bookings');
     const usersCollection = client.db('bikeRackResale').collection('users');
+    const reportProductsCollection = client.db('bikeRackResale').collection('reportProducts');
+
+
     try{
         app.get('/categories', async(req, res)=>{
             const query = {};
@@ -104,7 +107,7 @@ async function run(){
             const result = await bookingsCollection.insertOne(booking);
             res.send(result);
         });
-        
+
         app.delete('/bookings/:id', async(req, res)=>{
             const id = req.params.id;
             const filter = {_id: ObjectId(id)};
@@ -183,6 +186,18 @@ async function run(){
             const user = await usersCollection.findOne(query);
             res.send({isSeller: user?.isUser === 'Seller'});
         });
+
+        // report product 
+        app.get('/reportProducts', async(req, res)=> {
+            const query = {};
+            const result = await reportProductsCollection.find(query).toArray();
+            res.send(result);
+        })
+        app.post('/reportProducts', async(req, res)=>{
+            const reportProduct = req.body;
+            const result = await reportProductsCollection.insertOne(reportProduct);
+            res.send(result); 
+        })
 
     }
     finally{
