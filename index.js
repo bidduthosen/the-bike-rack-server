@@ -87,11 +87,30 @@ async function run(){
         })
 
         // users collections
+        app.get('/users', async(req, res)=>{
+            const query = {};
+            const users = await usersCollection.find(query).toArray();
+            res.send(users);
+        })
         app.post('/users', async(req, res)=>{
             const user = req.body;
             const result = await usersCollection.insertOne(user);
             res.send(result);
         })
+        app.put('/users/admin/:id', async(req, res)=>{
+            const id = req.params.id;
+            const filter = {_id: ObjectId(id)};
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    role: 'admin'
+                }
+            }
+            const result = await usersCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
+        })
+
+
     }
     finally{
 
